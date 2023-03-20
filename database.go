@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 )
 
 type Entry struct {
@@ -33,6 +34,18 @@ func EnsureDBExists() *sql.DB {
 	`)
 
 	return db
+}
+
+func Find(db *sql.DB, short_url string) (long_url string, er error) {
+	row := db.QueryRow(
+		`SELECT long_url FROM urls WHERE short_url = ? LIMIT 1`,
+		short_url,
+	)
+	if er := row.Scan(&long_url); er != nil {
+		return "", errors.New("url not found")
+	}
+
+	return
 }
 
 // Maybe later I'll come up with an interface for that?

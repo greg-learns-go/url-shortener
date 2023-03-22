@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/greg-learns-go/url-shortener/urls_db"
 )
 
-var conn Connection = CreateConnection("file:database.db")
+var conn urls_db.Connection = urls_db.CreateConnection("file:database.db")
 
 func init() {
 	conn.EnsureDBExists()

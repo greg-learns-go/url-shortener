@@ -1,8 +1,10 @@
-package main
+package urls_db
 
 import (
 	"database/sql"
 	"errors"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Connection struct {
@@ -14,8 +16,8 @@ type Entry struct {
 	long_url  string
 }
 
-func CreateConnection(conn_string string) Connection {
-	db, er := sql.Open("sqlite3", conn_string)
+func CreateConnection(connString string) Connection {
+	db, er := sql.Open("sqlite3", connString)
 	if er != nil {
 		panic(er)
 	}

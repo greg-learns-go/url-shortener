@@ -5,39 +5,57 @@ import (
 	"errors"
 )
 
+type Connection struct {
+	Db *sql.DB
+}
+
 type Entry struct {
 	short_url string
 	long_url  string
 }
 
-func EnsureDBExists() *sql.DB {
-	db, er := sql.Open("sqlite3", "file:database.db")
+func CreateConnection(conn_string string) Connection {
+	db, er := sql.Open("sqlite3", conn_string)
 	if er != nil {
 		panic(er)
 	}
+	return Connection{Db: db}
+}
 
-	db.Exec(`
+func (conn *Connection) Close() {
+	conn.Db.Close()
+}
+
+func (conn *Connection) EnsureDBExists() {
+	_, er := conn.Db.Exec(`
 		CREATE TABLE IF NOT EXISTS urls (
 		  long_url TEXT NOT NULL PRIMARY KEY,
 			short_url TEXT NOT NULL
 	 ) WITHOUT ROWID;
 	`)
+	if er != nil {
+		panic(er)
+	}
 
-	db.Exec(`
+	_, er = conn.Db.Exec(`
 		CREATE UNIQUE INDEX IF NOT EXISTS unique_long_urls
 		ON urls(long_url)
 	`)
+	if er != nil {
+		panic(er)
+	}
 
-	db.Exec(`
+	_, er = conn.Db.Exec(`
 		CREATE UNIQUE INDEX IF NOT EXISTS unique_short_urls
 		ON urls(short_url)
 	`)
-
-	return db
+	if er != nil {
+		panic(er)
+	}
 }
 
-func Find(db *sql.DB, short_url string) (long_url string, er error) {
-	row := db.QueryRow(
+func (conn *Connection) Find(short_url string) (long_url string, er error) {
+	row := conn.Db.QueryRow(
 		`SELECT long_url FROM urls WHERE short_url = ? LIMIT 1`,
 		short_url,
 	)
@@ -49,16 +67,16 @@ func Find(db *sql.DB, short_url string) (long_url string, er error) {
 }
 
 // Maybe later I'll come up with an interface for that?
-func Insert(db *sql.DB, long_url, short_url string) (er error) {
-	_, er = db.Exec(`
+func (conn *Connection) Insert(long_url, short_url string) (er error) {
+	_, er = conn.Db.Exec(`
 		INSERT INTO urls (long_url, short_url)
 		VALUES (?, ?)
 	`, long_url, short_url)
 	return er
 }
 
-func GetAll(db *sql.DB) (results []Entry, er error) {
-	rows, er := database.Query("Select * from urls")
+func (conn *Connection) GetAll() (results []Entry, er error) {
+	rows, er := conn.Db.Query("Select * from urls")
 	if er != nil {
 		return nil, er
 	}

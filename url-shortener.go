@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
@@ -9,18 +8,18 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var database *sql.DB
+var conn Connection = CreateConnection("file:database.db")
 
 func init() {
-	database = EnsureDBExists()
+	conn.EnsureDBExists()
 }
 
 func main() {
-	defer database.Close()
+	defer conn.Close()
 
-	fmt.Println(GetAll(database))
+	fmt.Println(conn.GetAll())
 
-	url, er := Find(database, "so")
+	url, er := conn.Find("so")
 	if er != nil {
 		fmt.Println("Find:", er)
 	}
@@ -37,7 +36,7 @@ func main() {
 func sroot(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		var response string
-		url, er := Find(database, strings.Trim(
+		url, er := conn.Find(strings.Trim(
 			r.URL.EscapedPath(), "/",
 		))
 		if er != nil {

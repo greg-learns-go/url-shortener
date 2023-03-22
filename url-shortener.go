@@ -19,12 +19,6 @@ func main() {
 
 	fmt.Println(conn.GetAll())
 
-	url, er := conn.Find("so")
-	if er != nil {
-		fmt.Println("Find:", er)
-	}
-	fmt.Println("Find:", url)
-
 	http.HandleFunc("/", sroot)
 	http.ListenAndServe(":8080", nil)
 

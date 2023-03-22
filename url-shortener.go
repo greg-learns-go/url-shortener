@@ -28,6 +28,15 @@ func main() {
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {
+	// TODO:
+	// When POST, expect long URL, present back short URL
+	//   -- maybe implement own hashing function, that would
+	//   -- differently calculate each char of short_url (go routines?)
+	//   -- save current length, when options are exhausted (too many collisions)
+	//   -- calculate has for short URL with one more character
+	// When GET - respond with 30X redirect
+	// When GET ?all - don't look for short url, but present all known URLs
+
 	if r.Method == "GET" {
 		var response string
 		url, er := conn.Find(strings.Trim(

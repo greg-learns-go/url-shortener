@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+	"text/template"
 
 	"github.com/greg-learns-go/url-shortener/urls_db"
 )
@@ -35,19 +36,21 @@ func allLinks(w http.ResponseWriter, r *http.Request) {
 	if er != nil {
 		log.Fatal("Error:", er)
 	}
-	fmt.Printf("%+v", records)
 
-	templateString := `
-		{{range .}}
-			<a href='//{{ .LongUrl }}'>{{ .ShortUrl }}</a></br>
-		{{end}}
-	`
-	t, er := template.New("all links").Parse(templateString)
+	t := loadTemplate("all.template.html")
+	t.Execute(w, records)
+}
+
+func loadTemplate(name string) (t *template.Template) {
+	str, er := os.ReadFile("templates/" + name)
 	if er != nil {
 		panic(er)
 	}
-
-	t.Execute(w, records)
+	t, er = template.New(name).Parse(string(str))
+	if er != nil {
+		panic(er)
+	}
+	return
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {

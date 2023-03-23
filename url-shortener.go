@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -34,13 +35,19 @@ func allLinks(w http.ResponseWriter, r *http.Request) {
 	if er != nil {
 		log.Fatal("Error:", er)
 	}
-	out := ""
 	fmt.Printf("%+v", records)
 
-	for _, record := range records {
-		out += fmt.Sprintf("<a href='%s'>%s</a><br/>", record.ShortUrl, record.ShortUrl)
+	templateString := `
+		{{range .}}
+			<a href='//{{ .LongUrl }}'>{{ .ShortUrl }}</a></br>
+		{{end}}
+	`
+	t, er := template.New("all links").Parse(templateString)
+	if er != nil {
+		panic(er)
 	}
-	w.Write([]byte(out))
+
+	t.Execute(w, records)
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {

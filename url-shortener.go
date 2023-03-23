@@ -61,18 +61,39 @@ func sroot(w http.ResponseWriter, r *http.Request) {
 	//   -- save current length, when options are exhausted (too many collisions)
 	//   -- calculate has for short URL with one more character
 	// When GET - respond with 30X redirect
-	// When GET ?all - don't look for short url, but present all known URLs
 
-	if r.Method == "GET" {
-		var response string
-		url, er := conn.Find(strings.Trim(
-			r.URL.EscapedPath(), "/",
-		))
-		if er != nil {
-			response = "Can't find this shortened URL"
-		} else {
-			response = "it looks like you're looking for " + url
+	path := r.URL.EscapedPath()
+
+	fmt.Println("EscapedPath: ", path)
+
+	if path == "/" {
+		fmt.Println("[INF] / serve form or accept POST submission")
+		switch r.Method {
+		case "GET":
+			renderSubmissionForm(w)
+		case "POST":
+			if er := r.ParseForm(); er != nil {
+				fmt.Println(er)
+			}
+			fmt.Println("[INF] POST!!!!!!", r.Form["url"])
 		}
-		w.Write([]byte(response))
+	} else {
+		findLinkAndServe(w, path)
 	}
+}
+
+func renderSubmissionForm(w http.ResponseWriter) {
+	t := loadTemplate("form.template.html")
+	t.Execute(w, nil)
+}
+
+func findLinkAndServe(w http.ResponseWriter, path string) {
+	url, er := conn.Find(strings.Trim(path, "/"))
+	var response string
+	if er != nil {
+		response = "Can't find this shortened URL"
+	} else {
+		response = "it looks like you're looking for " + url
+	}
+	w.Write([]byte(response))
 }

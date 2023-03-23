@@ -16,11 +16,11 @@ Bonus points:
 
 
 Used concepts: 
-- [x] Go basics (slices, loops, pointers etc.) 
-- [x] Modules/packages (internal and external) 
-- [x] net/http server
-- [x] database/sql
-- [x] func init
-- [x] defer
-- [ ] go routines
-- [ ] html templates
+- ✓ Go basics (slices, loops, pointers etc.) 
+- ✓ Modules/packages (internal and external) 
+- ✓ net/http server
+- ✓ database/sql
+- ✓ func init
+- ✓ defer
+- go routines
+- html templates

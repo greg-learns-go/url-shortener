@@ -12,8 +12,8 @@ type Connection struct {
 }
 
 type Entry struct {
-	short_url string
-	long_url  string
+	ShortUrl string
+	LongUrl  string
 }
 
 func CreateConnection(connString string) Connection {
@@ -78,20 +78,22 @@ func (conn *Connection) Insert(long_url, short_url string) (er error) {
 }
 
 func (conn *Connection) GetAll() (results []Entry, er error) {
+	var entry Entry
 	rows, er := conn.Db.Query("Select * from urls")
 	if er != nil {
 		return nil, er
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var (
-			long_url  string
-			short_url string
-		)
-		if er := rows.Scan(&long_url, &short_url); er != nil {
+		// var (
+		// 	long_url  string
+		// 	short_url string
+		// )
+		entry = Entry{}
+		if er := rows.Scan(&entry.LongUrl, &entry.ShortUrl); er != nil {
 			return nil, er
 		}
-		results = append(results, Entry{long_url: long_url, short_url: short_url})
+		results = append(results, entry)
 	}
 	return
 }

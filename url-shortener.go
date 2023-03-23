@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -20,11 +21,26 @@ func main() {
 	fmt.Println(conn.GetAll())
 
 	http.HandleFunc("/", sroot)
+	http.HandleFunc("/all", allLinks)
 	http.ListenAndServe(":8080", nil)
 
 	// TODO: This is not printed, check out why
 	fmt.Println("Server running on http://localhost:8080")
 	fmt.Println("ctrl-C to terminate")
+}
+
+func allLinks(w http.ResponseWriter, r *http.Request) {
+	records, er := conn.GetAll()
+	if er != nil {
+		log.Fatal("Error:", er)
+	}
+	out := ""
+	fmt.Printf("%+v", records)
+
+	for _, record := range records {
+		out += fmt.Sprintf("<a href='%s'>%s</a><br/>", record.ShortUrl, record.ShortUrl)
+	}
+	w.Write([]byte(out))
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {

@@ -85,10 +85,6 @@ func (conn *Connection) GetAll() (results []Entry, er error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		// var (
-		// 	long_url  string
-		// 	short_url string
-		// )
 		entry = Entry{}
 		if er := rows.Scan(&entry.LongUrl, &entry.ShortUrl); er != nil {
 			return nil, er

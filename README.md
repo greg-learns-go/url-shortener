@@ -13,3 +13,14 @@ The objective: self contained app, including a server, that can
 Bonus points:
 - compile an executable for other platforms? (Mac, Windows?)
 - deploy the executable in some hosting?
+
+
+Used concepts: 
+- [x] Go basics (slices, loops, pointers etc.) 
+- [x] Modules/packages (internal and external) 
+- [x] net/http server
+- [x] database/sql
+- [x] func init
+- [x] defer
+- [ ] go routines
+- [ ] html templates

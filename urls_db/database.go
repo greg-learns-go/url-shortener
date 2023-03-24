@@ -36,22 +36,12 @@ func (conn *Connection) EnsureDBExists() {
 		  long_url TEXT NOT NULL PRIMARY KEY,
 			short_url TEXT NOT NULL
 	 ) WITHOUT ROWID;
-	`)
-	if er != nil {
-		panic(er)
-	}
 
-	_, er = conn.Db.Exec(`
 		CREATE UNIQUE INDEX IF NOT EXISTS unique_long_urls
-		ON urls(long_url)
-	`)
-	if er != nil {
-		panic(er)
-	}
+		ON urls(long_url);
 
-	_, er = conn.Db.Exec(`
 		CREATE UNIQUE INDEX IF NOT EXISTS unique_short_urls
-		ON urls(short_url)
+		ON urls(short_url);
 	`)
 	if er != nil {
 		panic(er)

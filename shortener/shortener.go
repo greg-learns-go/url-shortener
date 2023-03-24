@@ -10,9 +10,10 @@ import (
 // if conflict = add more letters with this approach
 
 const (
-	upperCaseA  = 42
-	lowerCaseA  = 97
-	cardinality = 26
+	upperCaseA   = 65
+	lowerCaseA   = 97
+	alphabetSize = 26
+	cardinality  = alphabetSize * 2
 )
 
 // TODO: to clarify later: All functions close on this var,
@@ -22,11 +23,11 @@ var chars [cardinality * 2]rune
 
 func init() {
 	i := 0
-	for j := lowerCaseA; j < lowerCaseA+cardinality; j++ {
+	for j := lowerCaseA; j < lowerCaseA+alphabetSize; j++ {
 		chars[i] = rune(j)
 		i++
 	}
-	for j := upperCaseA; j < upperCaseA+cardinality; j++ {
+	for j := upperCaseA; j < upperCaseA+alphabetSize; j++ {
 		chars[i] = rune(j)
 		i++
 	}

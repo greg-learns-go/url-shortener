@@ -54,14 +54,6 @@ func loadTemplate(name string) (t *template.Template) {
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {
-	// TODO:
-	// When POST, expect long URL, present back short URL
-	//   -- maybe implement own hashing function, that would
-	//   -- differently calculate each char of short_url (go routines?)
-	//   -- save current length, when options are exhausted (too many collisions)
-	//   -- calculate has for short URL with one more character
-	// When GET - respond with 30X redirect
-
 	path := r.URL.EscapedPath()
 
 	fmt.Println("EscapedPath: ", path)

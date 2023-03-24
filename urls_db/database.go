@@ -113,5 +113,5 @@ func (conn *Connection) FindOrInsert(long string) (Entry, error) {
 	}
 
 	// conflict (long URL generated a hash that a different URL has already been saved with)
-	panic("Conflics, Not implemented yet")
+	panic("Conflict, Not implemented yet")
 }

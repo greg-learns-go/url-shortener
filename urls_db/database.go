@@ -3,7 +3,9 @@ package urls_db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
+	"github.com/greg-learns-go/url-shortener/shortener"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -92,4 +94,24 @@ func (conn *Connection) GetAll() (results []Entry, er error) {
 		results = append(results, entry)
 	}
 	return
+}
+
+func (conn *Connection) FindOrInsert(long string) (Entry, error) {
+	short := shortener.Shorten(long)
+
+	longInDb, er := conn.Find(short)
+	if er != nil {
+		if er = conn.Insert(long, short); er != nil {
+			fmt.Println("[ERR]", er)
+		}
+		return Entry{LongUrl: long, ShortUrl: short}, nil
+	}
+
+	if longInDb == long {
+		// Exact duplicate, no need to do anything
+		return Entry{ShortUrl: short, LongUrl: long}, nil
+	}
+
+	// conflict (long URL generated a hash that a different URL has already been saved with)
+	panic("Conflics, Not implemented yet")
 }

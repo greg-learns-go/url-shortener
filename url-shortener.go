@@ -75,10 +75,24 @@ func sroot(w http.ResponseWriter, r *http.Request) {
 			if er := r.ParseForm(); er != nil {
 				fmt.Println(er)
 			}
-			fmt.Println("[INF] POST!!!!!!", r.Form["url"])
+			fmt.Println("[INF] POST!!!!!!", r.Form["url"][0])
+			entry, er := conn.FindOrInsert(r.Form["url"][0])
+			renderPostResponse(w, entry, er)
 		}
 	} else {
 		findLinkAndServe(w, path)
+	}
+}
+
+func renderPostResponse(w http.ResponseWriter, entry urls_db.Entry, er error) {
+	var t *template.Template
+
+	if er != nil {
+		t = loadTemplate("submission.error.template.html")
+		t.Execute(w, er)
+	} else {
+		t = loadTemplate("submission.success.template.html")
+		t.Execute(w, entry)
 	}
 }
 

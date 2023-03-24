@@ -1,6 +1,6 @@
 # URL-shortener
 
-[![Go](https://github.com/greg-learns-go/url-shortener/actions/workflows/go.yml/badge.svg)](https://github.com/greg-learns-go/url-shortener/actions/workflows/go.yml)
+[![CI](https://github.com/greg-learns-go/url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/greg-learns-go/url-shortener/actions/workflows/ci.yml)
 
 This is a project to learn GO.
 

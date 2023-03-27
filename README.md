@@ -6,17 +6,29 @@ This is a project to learn GO.
 
 The objective: self-contained app, including a server, that can
 
-- save a new URL, and respond with a short version POST requests
-- retrieve a shortened URL on GET, and redirect
-- covered with unit tests
-- flags specifying domain/port
+## Goals
 
-Bonus points:
+- [x] save a new URL in the database with a short identifier
+- [ ] retrieve a shortened URL on GET, and redirect(*)
+- [ ] covered with unit tests
+- [ ] flags specifying domain/port
 
-- compile an executable for other platforms? (Mac, Windows?)
-- deploy the executable in some hosting?
+## WIP
 
-Used concepts:
+- [ ] The Shrotener interface/struct is still a mess and requires some refactoring
+- [ ] redirect is not implemented yet (for manual testing convenience), will be implemented when main module is covered with tests
+
+## Quirks
+
+The "hash function" is a silly approach, with unknown probability for collisions (probably bad)
+This is not a decision I'd make in a production code.
+
+## Bonus points
+
+- [ ] compile an executable for other platforms? (Mac, Windows?)
+- [ ] deploy the executable in some hosting?
+
+## Used concepts
 
 - ✓ Go basics (slices, loops, pointers etc.)
 - ✓ Modules/packages (internal and external)

@@ -23,6 +23,10 @@ func TestFoo(t *testing.T) {
 			Input:    "aaaaaaaaaaaaaaaaaaaaaaaaaa",
 			Expected: "AAa",
 		},
+		{
+			Input:    "example.com",
+			Expected: "leg",
+		},
 	}
 
 	for _, tC := range testCases {

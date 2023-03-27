@@ -2,6 +2,8 @@ package urls_db
 
 import (
 	"testing"
+
+	"github.com/greg-learns-go/url-shortener/shortener"
 )
 
 func prepareDb(t *testing.T) Connection {
@@ -31,7 +33,7 @@ func TestInsertStoresEntry(t *testing.T) {
 func TestFindOrInsertNewUrl(t *testing.T) {
 	testConn := prepareDb(t)
 
-	entry, er := testConn.FindOrInsert("http://example.com")
+	entry, er := testConn.FindOrInsert("http://example.com", shortener.New())
 
 	if er != nil {
 		t.Fatalf("FindOrInsert returned error: %v", er)
@@ -42,14 +44,14 @@ func TestFindOrInsertNewUrl(t *testing.T) {
 	}
 }
 
-func TestFindOrInsertExisti(t *testing.T) {
+func TestFindOrInsertExisting(t *testing.T) {
 	testConn := prepareDb(t)
 
 	testConn.Insert("example.com", "leg")
 
 	beforeCount := countAllRows(testConn)
 
-	_, er := testConn.FindOrInsert("example.com")
+	_, er := testConn.FindOrInsert("example.com", shortener.New())
 	if er != nil {
 		t.Fatalf("FindOrInsert returned error: %v", er)
 	}
@@ -57,9 +59,46 @@ func TestFindOrInsertExisti(t *testing.T) {
 	afterCount := countAllRows(testConn)
 
 	if afterCount-beforeCount != 0 {
-		t.Errorf("FindOrInsert changed nymber of rows by %v, expected 0", afterCount-beforeCount)
+		t.Errorf("FindOrInsert changed number of rows by %v, expected 0", afterCount-beforeCount)
+	}
+}
+func TestFindOrInsertExistingConflict(t *testing.T) {
+	testConn := prepareDb(t)
+
+	testConn.Insert("example.com", "sHOrT")
+	beforeCount := countAllRows(testConn)
+
+	_, er := testConn.FindOrInsert("other.example.com", NewMockShortener("sHOrT"))
+	if er == nil {
+		t.Error("expected FindOrInsert to return an error")
 	}
 
+	expectedMessage := "URL other.example.com is in conflict with example.com, both produce sHOrT"
+	if er.Error() != expectedMessage {
+		t.Errorf(
+			"Expected FindOrInsert to return an error with message \n%v, got \n%v",
+			expectedMessage,
+			er.Error(),
+		)
+	}
+
+	afterCount := countAllRows(testConn)
+
+	if afterCount-beforeCount != 0 {
+		t.Errorf("FindOrInsert changed number of rows by %v, expected 0", afterCount-beforeCount)
+	}
+}
+
+type mockShortener struct {
+	Shorted string
+}
+
+func NewMockShortener(short string) Shortener {
+	return mockShortener{Shorted: short}
+}
+
+func (s mockShortener) Shorten(url string) string {
+	return s.Shorted
 }
 
 func countAllRows(conn Connection) int {

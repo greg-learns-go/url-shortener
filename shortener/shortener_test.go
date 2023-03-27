@@ -1,8 +1,11 @@
 package shortener
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFoo(t *testing.T) {
+	shortener := New()
 	testCases := []struct {
 		Input    string
 		Expected string
@@ -30,7 +33,7 @@ func TestFoo(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
-		got := Shorten(tC.Input)
+		got := shortener.Shorten(tC.Input)
 		if got != tC.Expected {
 			t.Errorf("for %s expected %s got %s", tC.Input, tC.Expected, got)
 		}

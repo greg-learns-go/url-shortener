@@ -26,3 +26,4 @@ Used concepts:
 - ✓ defer
 - ✓ go routines
 - ✓ html templates
+- ✓ dependency injection (using interfaces)

@@ -33,11 +33,17 @@ func init() {
 	}
 }
 
+type Shortener struct{}
+
+func New() *Shortener {
+	return &Shortener{}
+}
+
 // This is not something I'd implement in production,
 // just made up, probably mathematically incorrect
 // hashing function, with unknown collision probability
 // I just want to use go routines for that.
-func Shorten(in string) string {
+func (Shortener) Shorten(in string) string {
 	len := make(chan string, 1)
 	val := make(chan string, 1)
 	cons := make(chan string, 1)

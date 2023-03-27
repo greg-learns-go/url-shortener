@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/greg-learns-go/url-shortener/shortener"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -86,7 +85,12 @@ func (conn *Connection) GetAll() (results []Entry, er error) {
 	return
 }
 
-func (conn *Connection) FindOrInsert(long string) (Entry, error) {
+type Shortener interface {
+	Shorten(string) string
+}
+
+func (conn *Connection) FindOrInsert(long string, shortener Shortener) (Entry, error) {
+
 	short := shortener.Shorten(long)
 
 	longInDb, er := conn.Find(short)
@@ -102,6 +106,7 @@ func (conn *Connection) FindOrInsert(long string) (Entry, error) {
 		return Entry{ShortUrl: short, LongUrl: long}, nil
 	}
 
-	// conflict (long URL generated a hash that a different URL has already been saved with)
-	panic("Conflict, Not implemented yet")
+	return Entry{}, fmt.Errorf(
+		"URL %s is in conflict with %s, both produce %s", long, longInDb, short,
+	)
 }

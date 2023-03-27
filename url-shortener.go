@@ -8,6 +8,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/greg-learns-go/url-shortener/shortener"
 	"github.com/greg-learns-go/url-shortener/urls_db"
 )
 
@@ -68,7 +69,7 @@ func sroot(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(er)
 			}
 			fmt.Println("[INF] POST!!!!!!", r.Form["url"][0])
-			entry, er := conn.FindOrInsert(r.Form["url"][0])
+			entry, er := conn.FindOrInsert(r.Form["url"][0], shortener.New())
 			renderPostResponse(w, entry, er)
 		}
 	} else {

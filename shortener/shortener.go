@@ -4,6 +4,10 @@ import (
 	"regexp"
 )
 
+type Shortener interface {
+	Shorten(string) string
+}
+
 // first letter: len of URL % 52 = map a-ZA-Z
 // number of vals mod 52
 // number of consonants
@@ -33,17 +37,17 @@ func init() {
 	}
 }
 
-type Shortener struct{}
+type shortener struct{}
 
-func New() *Shortener {
-	return &Shortener{}
+func New() *shortener {
+	return &shortener{}
 }
 
 // This is not something I'd implement in production,
 // just made up, probably mathematically incorrect
 // hashing function, with unknown collision probability
 // I just want to use go routines for that.
-func (Shortener) Shorten(in string) string {
+func (shortener) Shorten(in string) string {
 	len := make(chan string, 1)
 	val := make(chan string, 1)
 	cons := make(chan string, 1)

@@ -4,14 +4,14 @@
 
 This is a project to learn GO.
 
-The objective: self-contained app, including a server, that can
+The objective: self-contained app, including a server, that:
 
 ## Goals
 
-- [x] save a new URL in the database with a short identifier
-- [ ] retrieve a shortened URL on GET, and redirect(*)
-- [ ] covered with unit tests
-- [ ] flags specifying domain/port
+- [x] can save a new URL in the database with a short identifier
+- [ ] can retrieve a shortened URL on GET, and redirect(*)
+- [ ] save covered with unit tests
+- [ ] has flags specifying domain/port
 
 ## WIP
 

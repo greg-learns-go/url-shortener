@@ -25,11 +25,12 @@ func main() {
 
 	http.HandleFunc("/", sroot)
 	http.HandleFunc("/all", allLinks)
-	http.ListenAndServe(":8080", nil)
 
-	// TODO: This is not printed, check out why
 	fmt.Println("Server running on http://localhost:8080")
 	fmt.Println("ctrl-C to terminate")
+
+	// TODO: explore graceful shutdown https://stackoverflow.com/questions/39320025/how-to-stop-http-listenandserve/42533360#42533360
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func allLinks(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +69,7 @@ func sroot(w http.ResponseWriter, r *http.Request) {
 			if er := r.ParseForm(); er != nil {
 				fmt.Println(er)
 			}
-			fmt.Println("[INF] POST!!!!!!", r.Form["url"][0])
+			fmt.Println("[INF] POST /", r.Form["url"][0])
 			entry, er := conn.FindOrInsert(r.Form["url"][0], shortener.New())
 			renderPostResponse(w, entry, er)
 		}

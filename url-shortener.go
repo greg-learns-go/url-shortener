@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
-	"text/template"
 
 	"github.com/greg-learns-go/url-shortener/shortener"
+	"github.com/greg-learns-go/url-shortener/templates"
 	"github.com/greg-learns-go/url-shortener/urls_db"
 )
 
 var conn urls_db.Connection = urls_db.CreateConnection("file:database.db")
+var t = templates.New("./templates/") // TODO: make it not global
 
 func init() {
 	conn.EnsureDBExists()
@@ -39,20 +39,7 @@ func allLinks(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error:", er)
 	}
 
-	t := loadTemplate("all.template.html")
-	t.Execute(w, records)
-}
-
-func loadTemplate(name string) (t *template.Template) {
-	str, er := os.ReadFile("templates/" + name)
-	if er != nil {
-		panic(er)
-	}
-	t, er = template.New(name).Parse(string(str))
-	if er != nil {
-		panic(er)
-	}
-	return
+	t.All.Execute(w, records)
 }
 
 func sroot(w http.ResponseWriter, r *http.Request) {
@@ -79,20 +66,15 @@ func sroot(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderPostResponse(w http.ResponseWriter, entry urls_db.Entry, er error) {
-	var t *template.Template
-
 	if er != nil {
-		t = loadTemplate("submission.error.template.html")
-		t.Execute(w, er)
+		t.SubmissionError.Execute(w, er)
 	} else {
-		t = loadTemplate("submission.success.template.html")
-		t.Execute(w, entry)
+		t.SubmissionSuccess.Execute(w, entry)
 	}
 }
 
 func renderSubmissionForm(w http.ResponseWriter) {
-	t := loadTemplate("form.template.html")
-	t.Execute(w, nil)
+	t.Form.Execute(w, nil)
 }
 
 func findLinkAndServe(w http.ResponseWriter, path string) {
